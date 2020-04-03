@@ -13,7 +13,7 @@ function isNum(n) {
  * Process game.
  */
 function startGame() {
-    let myNumber = 9;
+    let myNumber = Math.round(Math.random() * 100) + 1;
     let userNumber = prompt('Угадай число от 0 до 100');
 
     if(userNumber !== null) {
