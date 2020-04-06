@@ -9,88 +9,58 @@ function isNum(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-/**
- * Process game.
- */
-function startGame(num, newGame = false) {
-    let myNumber = Math.round(Math.random() * 100) + 1;
+function minMaxNumber (min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-    if(newGame) {
-        myNumber = Math.round(Math.random() * 100) + 1;
-    }
+function getCount() {
+    let count = 0;
+    return function() {
+        return ++count;
+    };
+}
+
+function startGame(attepms) {
+    let myNumber = minMaxNumber(1, 100);
     console.log(myNumber);
+    let counter = getCount();
 
-    let userNumber = prompt('Угадай число от 0 до 100');
-    let numberAttempts = num;
+    return (function nextNumber() {
+        let count = counter();
+        let userNumber = prompt('Угадай число от 1 до 100');
 
-    if(userNumber !== null) {
-        function processGame() {
-            if(isNum(userNumber)) {
-                if(userNumber > myNumber) {
-                    numberAttempts--;
+        if (isNum(userNumber)) {
+            let replayGame = false;
 
-                    if(!numberAttempts) {
-                        replayGame();
-                    } else {
-                        alert('Загаданное число меньше, осталось попыток: ' + numberAttempts);
-                        startGame(numberAttempts);
-                    }
+            if(count < attepms) {
+                let countAttempt = attepms - count;
+                let num = +userNumber;
+
+                if(num > myNumber) {
+                    alert('Загаданное число меньше, осталось попыток: ' + countAttempt);
+                    return nextNumber();
                 }
-                else if(userNumber < myNumber) {
-                    numberAttempts--;
-
-                    if(!numberAttempts) {
-                        replayGame();
-                    } else {
-                        alert('Загаданное число больше, осталось попыток: ' + numberAttempts);
-                        startGame(numberAttempts);
-                    }
+                if(num < myNumber) {
+                    alert('Загаданное число больше, осталось попыток: ' + countAttempt);
+                    return nextNumber();
                 }
-                else {
-                    let replayGame = confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
 
-                    if(replayGame) {
-                        startGame(10, true);
-                    }
-                    else {
-                        alert('До скорого!');
-                        return;
-                    }
-                }
+                replayGame = confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
+            } else {
+                replayGame = confirm('Попытки закончились, хотите сыграть еще?');
             }
-            else {
-                let validate = confirm('Введи число!');
-
-                if(validate) {
-                    numberAttempts--;
-
-                    startGame(numberAttempts);
-                }
-                else {
-                    alert('До скорого!');
-                    return;
-                }
-            } 
+            
+            if (replayGame) startGame(attepms);
+        } else {
+            if(userNumber !== null) {
+                alert('Введи число!');
+                nextNumber();
+            }
         }
-        return processGame(); 
-    }
-    else {
-        alert('До скорого!');
-        return;
-    }
+        return alert('До скорого!');
+    }());
 }
-startGame(10, true);
 
-/**
- * Check replay game.
- */
-function replayGame() {
-    let replay = confirm('Попытки закончились, хотите сыграть еще?');
-
-    if(replay) {
-        startGame(10, true);
-    } 
-    
-    alert('До скорого!');
-    return;
-}
+startGame(10);
