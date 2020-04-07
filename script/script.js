@@ -52,14 +52,17 @@ function startGame(attepms) {
                 replayGame = confirm('Попытки закончились, хотите сыграть еще?');
             }
             
-            if (replayGame) startGame(attepms);
-        } else {
-            if(userNumber !== null) {
-                alert('Введи число!');
-                nextNumber();
+            if (replayGame) {
+                startGame(attepms);
+            } else {
+                return alert('До скорого!');
             }
+        } else if (userNumber !== null) {
+            alert('Введи число!');
+            nextNumber();
+        } else {
+            return alert('До скорого!');
         }
-        return alert('До скорого!');
     }());
 }
 
